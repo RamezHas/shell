@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+
 
 #define MAX_INPUT 1024
+#define MAX_ARGS 64
 
 int main(void) {
     
@@ -10,17 +15,19 @@ int main(void) {
     char *args[MAX_INPUT];
     char *token;
     int i;
+    pid_t pid;
 
     while (1)
     {
         printf("$ ");
 
-        if(fgets(input, sizeof(input), stdin) == NULL) {
+        if(fgets(input, MAX_INPUT, stdin) == NULL) 
+        {
             printf("\n");
             break; 
         }
 
-        input[strcspn(input, "\n")] = 0; // Remove newline character
+        input[strcspn(input, "\n")] = 0; 
         
         token = strtok(input, " ");
         i = 0;
@@ -28,13 +35,20 @@ int main(void) {
             args[i++] = token;
             token = strtok(NULL, " ");
         }
-        args[i] = NULL; // Null-terminate the array of arguments
+        args[i] = NULL; 
 
-        for (int j = 0; j < i; j++)
+        pid = fork();
+        if (pid == 0)
         {
-            printf("args[%d]: %s\n", j, args[j]);
+            execvp(args[0],args);
+            perror("execvp");
+            exit(EXIT_FAILURE);
         }
-        
+        else if (pid > 0){
+            wait(NULL);
+        }else{
+            perror("fork");
+        }
     }
     
 
