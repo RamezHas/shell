@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
 
 #define MAX_INPUT 1024
 #define MAX_ARGS 64
 
 void shell_pwd();
 void shell_cd(char *path);
+void shell_ls();
 
 int main(void)
 {
@@ -27,6 +29,7 @@ int main(void)
 
         input[strcspn(input, "\n")] = 0;
 
+        // Tokenize input into args
         token = strtok(input, " ");
         i = 0;
         while (token != NULL && i < MAX_ARGS - 1)
@@ -39,6 +42,7 @@ int main(void)
         if (args[0] == NULL)
             continue;
 
+        // Command execution
         if (strcmp(args[0], "exit") == 0)
         {
             break;
@@ -51,6 +55,10 @@ int main(void)
         {
             shell_cd(args[1]);
         }
+        else if (strcmp(args[0], "ls") == 0)
+        {
+            shell_ls();
+        }
         else
         {
             printf("Command not found: %s\n", args[0]);
@@ -60,6 +68,7 @@ int main(void)
     return 0;
 }
 
+// Built-in: pwd
 void shell_pwd()
 {
     char cwd[1024];
@@ -69,6 +78,7 @@ void shell_pwd()
         perror("pwd");
 }
 
+// Built-in: cd
 void shell_cd(char *path)
 {
     if (path == NULL)
@@ -76,4 +86,27 @@ void shell_cd(char *path)
 
     if (chdir(path) != 0)
         perror("cd");
+}
+
+// Built-in: ls
+void shell_ls()
+{
+    DIR *dir;
+    struct dirent *entry;
+
+    dir = opendir(".");
+    if (dir == NULL)
+    {
+        perror("ls");
+        return;
+    }
+
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (entry->d_name[0] != '.') 
+            printf("%s  ", entry->d_name);
+    }
+
+    printf("\n");
+    closedir(dir);
 }
