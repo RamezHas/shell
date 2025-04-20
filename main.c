@@ -6,7 +6,6 @@
 #define MAX_INPUT 1024
 #define MAX_ARGS 64
 
-// Built-in function declarations
 void shell_pwd();
 void shell_cd(char *path);
 
