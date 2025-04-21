@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 #include <dirent.h>
 
 #define MAX_INPUT 1024
@@ -10,6 +9,7 @@
 void shell_pwd();
 void shell_cd(char *path);
 void shell_ls();
+void shell_echo(char *args[]);
 
 int main(void)
 {
@@ -58,6 +58,10 @@ int main(void)
         else if (strcmp(args[0], "ls") == 0)
         {
             shell_ls();
+        }
+        else if (strcmp(args[0], "echo") == 0)
+        {
+            shell_echo(args);
         }
         else
         {
@@ -109,4 +113,15 @@ void shell_ls()
 
     printf("\n");
     closedir(dir);
+}
+void shell_echo(char *args[]) {
+    if (args[1] == NULL) {
+        printf("echo: missing operand\n");
+        return;
+    }
+    while (args[1] != NULL) {
+        printf("%s ", args[1]);
+        args++;
+    }
+    printf("\n");
 }
