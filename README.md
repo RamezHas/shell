@@ -40,3 +40,43 @@ Use `$var_name` in `echo` commands to display variable values:
 $ set name=Alice
 $ echo Hello $name!
 Hello Alice!
+```
+## 📤📥 I/O Redirection
+Redirect output with > and input with <:
+```bash
+$ echo "File content" > output.txt  # Write to file
+$ cat < input.txt                  # Read from file
+```
+## 🛠️ Build & ▶️ Run
+```bash
+gcc shell.c -o shell
+./shell
+```
+## 💡 Example Usage
+```bash
+$ help
+Available commands:
+  exit    	Exit the shell
+  pwd     	Print current directory
+  echo    	Print arguments
+  help    	Show this help message
+  set     	Set variable (name=value)
+  get     	Get variable value
+
+$ set message="Hello World"
+$ get message
+message=Hello World
+
+$ echo $message > greeting.txt
+$ cat < greeting.txt
+Hello World
+
+$ echo "Current directory:" && pwd
+Current directory: 
+/home/user/simpleshell
+
+$ invalid_cmd
+Command not found: invalid_cmd
+
+$ exit
+```
